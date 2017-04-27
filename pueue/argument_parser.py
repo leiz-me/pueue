@@ -60,6 +60,18 @@ max_processes_subcommand.set_defaults(
     option='maxProcesses',
 )
 
+# Configuration: custom shell
+custom_shell_subcommand = config_subparser.add_parser(
+    'customShell', help='Use a custom shell instead of /bin/sh.')
+custom_shell_subcommand.add_argument(
+    'value', type=str,
+    help="The path to the custom shell that should be used. Enter 'default' for /bin/sh"
+)
+custom_shell_subcommand.set_defaults(
+    func=print_command_factory('config'),
+    option='customShell',
+)
+
 
 # Show
 show_subcommand = subparsers.add_parser('show', help='Shows the output of the currently running process')
@@ -185,7 +197,7 @@ enqueue_subcommand.add_argument(
 enqueue_subcommand.set_defaults(func=print_command_factory('enqueue'))
 
 
-def doesnt_represent_int(string):
+def does_not_represent_int(string):
     try:
         int(string)
         return False
@@ -196,7 +208,7 @@ def doesnt_represent_int(string):
 case_sensitive_signals = list(signals.keys())
 case_sensitive_signals += list(
     map(lambda x: x.upper(),
-        filter(doesnt_represent_int, case_sensitive_signals))
+        filter(does_not_represent_int, case_sensitive_signals))
 )
 
 # Kills the current running process

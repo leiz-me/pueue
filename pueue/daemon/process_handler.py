@@ -24,6 +24,7 @@ class ProcessHandler():
 
         self.stopped = False
         self.max_processes = 1
+        self.custom_shell = None
         self.processes = {}
         self.descriptors = {}
 
@@ -35,6 +36,10 @@ class ProcessHandler():
     def set_max(self, amount):
         """Set the amount of concurrent running processes."""
         self.max_processes = amount
+
+    def set_shell(self, path=None):
+        """Set the amount of concurrent running processes."""
+        self.custom_shell = path
 
     def is_running(self, key):
         """Return if there is a running process for this key."""
@@ -162,17 +167,34 @@ class ProcessHandler():
             # Get file descriptors
             stdout, stderr = self.get_descriptor(key)
 
-            # Create subprocess
-            self.processes[key] = subprocess.Popen(
-                self.queue[key]['command'],
-                shell=True,
-                stdout=stdout,
-                stderr=stderr,
-                stdin=subprocess.PIPE,
-                universal_newlines=True,
-                preexec_fn=os.setsid,
-                cwd=self.queue[key]['path']
-            )
+            if self.custom_shell:
+                # Create subprocess
+                self.processes[key] = subprocess.Popen(
+                    [
+                        self.custom_shell,
+                        '-i',
+                        '-c',
+                        self.queue[key]['command'],
+                    ],
+                    stdout=stdout,
+                    stderr=stderr,
+                    stdin=subprocess.PIPE,
+                    universal_newlines=True,
+                    preexec_fn=os.setsid,
+                    cwd=self.queue[key]['path']
+                )
+            else:
+                # Create subprocess
+                self.processes[key] = subprocess.Popen(
+                    self.queue[key]['command'],
+                    shell=True,
+                    stdout=stdout,
+                    stderr=stderr,
+                    stdin=subprocess.PIPE,
+                    universal_newlines=True,
+                    preexec_fn=os.setsid,
+                    cwd=self.queue[key]['path']
+                )
             self.queue[key]['status'] = 'running'
             self.queue[key]['start'] = str(datetime.now().strftime("%H:%M"))
 

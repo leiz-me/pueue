@@ -142,6 +142,7 @@ class Daemon():
             'stopAtError': True,
             'resumeAfterStart': False,
             'maxProcesses': 1,
+            'customShell': None,
         }
         self.config['log'] = {
             'logTime': 60*60*24*14,
@@ -277,6 +278,16 @@ class Daemon():
 
         if payload['option'] == 'maxProcesses':
             self.process_handler.set_max(payload['value'])
+        if payload['option'] == 'customShell':
+            path = payload['value']
+            if os.path.isfile(path) and os.access(path, os.X_OK):
+                self.process_handler.set_shell(path)
+            elif path == 'default':
+                self.process_handler.set_shell(None)
+            else:
+                return {'message': "File in path doesn't exist or is not executable.",
+                        'status': 'error'}
+
         self.write_config()
 
         return {'message': 'Configuration successfully updated.',
