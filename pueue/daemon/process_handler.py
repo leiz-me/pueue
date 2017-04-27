@@ -1,6 +1,7 @@
 import os
 import time
 import signal
+import psutil
 import subprocess
 
 from datetime import datetime
@@ -195,15 +196,10 @@ class ProcessHandler():
         for key in self.processes.keys():
             self.pause_process(key)
 
-    def stop_all(self):
-        """Stop all running processes."""
-        for key in self.processes.keys():
-            self.stop_process(key)
-
-    def kill_all(self):
+    def kill_all(self, kill_signal, kill_shell=False):
         """Kill all running processes."""
         for key in self.processes.keys():
-            self.stop_process(key, kill=True)
+            self.kill_process(key, kill_signal, kill_shell)
 
     def start_process(self, key):
         """Start a specific processes."""
@@ -228,25 +224,17 @@ class ProcessHandler():
             return True
         return False
 
-    def kill_process(self, key, remove=False, stash=False):
-        return self.stop_process(key, remove=remove, kill=True, stash=stash)
-
-    def stop_process(self, key, remove=False, kill=False, stash=False):
+    def kill_process(self, key, kill_signal, kill_shell=False):
         if key in self.processes:
             self.processes[key].poll()
             if self.processes[key].returncode is None:
                 # Kill process
-                if kill:
-                    os.killpg(os.getpgid(self.processes[key].pid), signal.SIGKILL)
-                    self.queue[key]['status'] = 'killing'
-                else:
-                    os.killpg(os.getpgid(self.processes[key].pid), signal.SIGTERM)
-                    self.queue[key]['status'] = 'stopping'
+                shell_process = psutil.Process(self.processes[key].pid)
+                children = shell_process.children()
+                if kill_shell or len(children) == 0:
+                    shell_process.send_signal(kill_signal)
+                for child in children:
+                    child.send_signal(kill_signal)
 
-                self.stopping.append(key)
-                if remove:
-                    self.to_remove.append(key)
-                if stash:
-                    self.to_stash.append(key)
-            return True
+                return True
         return False

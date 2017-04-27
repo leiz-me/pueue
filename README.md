@@ -68,13 +68,12 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
     2. Otherwise stop processing the queue and pause all running processes. If the `--wait` flag is set, the daemon will pause, but all running processes will finish on their own.  
 
 `pueue restart [keys...]` Enqueue the specified `done` or `failed` processes again.  
-`pueue stop [keys...] -r` This command has two different behaviors, depending on if a key is given:  
-    1. If keys are given, terminate the specified processes and stash them. If `-r` is provided the processes will be removed from the queue.  
-    2. Otherwise terminate all running processes (`kill`) and pause the daemon.  
 
-`pueue kill [keys...] -r` This command has two different behaviors, depending on if keys are given:  
-    1. If keys are given, KILL the specified processes (`kill -9`) and stash them. If `-r` is provided the running processes will be removed from the queue.  
-    2. Otherwise KILL all running processes (`kill -9`) and pause the daemon.  
+`pueue kill [keys...] -s [signal] -a` This command tries to copy the behaviour of the Linux `kill` command. It will send a signal (default is `sigterm`) to the specified processes.  
+    Available signals can be viewed with `pueue kill -h` under the `-s` flag. Either the int `15`, the full name `sigterm/SIGTERM` or the abbreviation `term/TERM` can be used.  
+    Be aware that by default the signal will only be sent to the children of the shell process , i.e. if you send a `sigint` right after starting `sleep 5 ; sleep 10` the `sleep 5` process will be stopped and the `sleep 10` will spawn afterwards. To send the signal to the parent process as well you need to add the `-a` flag.
+    1. If keys are given, the signal will be send to the specified processes.  
+    2. Otherwise send the signal to all running processes. If the signal is `sigint`, `sigterm` or `sigkill` the daemon will be paused.  
 
 
 `pueue show --key --watch ` Show the output of `--key` or the oldest running process.  
