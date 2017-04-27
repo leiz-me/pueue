@@ -37,7 +37,7 @@ class ProcessHandler():
         """Set the amount of concurrent running processes."""
         self.max_processes = amount
 
-    def set_shell(self, path=None):
+    def set_shell(self, path='default'):
         """Set the amount of concurrent running processes."""
         self.custom_shell = path
 
@@ -167,7 +167,7 @@ class ProcessHandler():
             # Get file descriptors
             stdout, stderr = self.get_descriptor(key)
 
-            if self.custom_shell:
+            if self.custom_shell != 'default':
                 # Create subprocess
                 self.processes[key] = subprocess.Popen(
                     [

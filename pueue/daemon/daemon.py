@@ -40,6 +40,8 @@ class Daemon():
             self.queue = Queue(self.config_dir)
             self.process_handler = ProcessHandler(self.queue, self.logger, self.config_dir)
             self.process_handler.set_max(int(self.config['default']['maxProcesses']))
+            self.process_handler.set_shell()
+
         except:
             self.logger.exception()
             raise
@@ -142,7 +144,7 @@ class Daemon():
             'stopAtError': True,
             'resumeAfterStart': False,
             'maxProcesses': 1,
-            'customShell': None,
+            'customShell': 'default',
         }
         self.config['log'] = {
             'logTime': 60*60*24*14,
@@ -283,7 +285,7 @@ class Daemon():
             if os.path.isfile(path) and os.access(path, os.X_OK):
                 self.process_handler.set_shell(path)
             elif path == 'default':
-                self.process_handler.set_shell(None)
+                self.process_handler.set_shell()
             else:
                 return {'message': "File in path doesn't exist or is not executable.",
                         'status': 'error'}
