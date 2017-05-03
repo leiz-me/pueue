@@ -60,7 +60,7 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
 
 `pueue start [keys...]` This command has three different behaviors, depending on if and what kind of keys are given:  
     1. If keys of paused processes are given, the processes will be started (`SIGCONT`), this happens even if the daemon is paused.  
-    1. If keys of queued or stashed processes are given, new processes will be spawned for those entries. This happens even if the daemon is paused or the max amount of processes is exceeded.  
+    2. If keys of queued or stashed processes are given, new processes will be spawned for those entries. This happens even if the daemon is paused or the max amount of processes is exceeded.  
     3. Otherwise the daemon will start to process the queue. This will start all paused processes (`SIGCONT`).  
 
 `pueue pause [keys...] --wait` This command has two different behaviors, depending on if keys are given:  
@@ -142,3 +142,4 @@ And thanks to thesharp for the extremely useful `daemonize` library.
 Pueue already works and is frequently used. There might be some small bugs, but I didn't encounter something serious in quite a while.
 
 Copyright &copy; 2016 Arne Beer ([@Nukesor](https://github.com/Nukesor))
+
