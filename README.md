@@ -95,6 +95,7 @@ The configuration file of pueue is located in `~/.config/pueue/pueue.ini`.
         stopAtError = True
         resumeAfterStart = False
         maxProcesses = 1
+        customShell = default
 
         [log]
         logTime = 1209600
@@ -102,6 +103,7 @@ The configuration file of pueue is located in `~/.config/pueue/pueue.ini`.
 `stopAtError = True` Determines if the demon should enter paused state, if a process in the queue fails.
 `resumeAfterStart = False` If you want pueue to instantly resume a queue from the last session, set this value to `True`.
 `maxProcesses = 1` Determines how many tasks should be processed concurrently.
+`customShell = default` The path to the custom shell that should be used. Enter `default` for `/bin/sh`. In case you use any other shell, every command will be launched from an interactive session. I.e. `[customShell, '-i', '-c', command]`. This is useful if you want to use aliases or environment variables.
 
 `logTime = 1209600`  Old logs will be deleted after the time specified in your config.
 
