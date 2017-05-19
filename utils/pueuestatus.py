@@ -18,10 +18,11 @@ def main():
             data = status['data']
             keys = sorted(data.keys())
             keys.reverse()
-            keys = keys[:4]
-            for key in keys:
+            status_list = []
+            for key in keys[:4]:
                 entry_status = status['data'][key]['status']
-                print("{}: {},".format(key, entry_status))
+                status_list.append(("{}: {}".format(key, entry_status)))
+            print(', '.join(status_list))
     except KeyboardInterrupt:
         sys.exit(0)
 
