@@ -133,6 +133,10 @@ Afterwards every user can start/enable it's own session with:
 
 If you use zsh, place `_pueue` in a folder, that is contained in your `FPATH` environment variable. This script will be probably added to zsh-users/zsh-completions, when it is finished.
 
+### Pueue status querying script for `i3pystatus`
+
+If you want to see the status of the last 4 entries in your status bar, just use the `utils/pueuestatus.py` script.
+
 ## Libraries used
 
 Regards to Robpol86 for providing the awesome `terminaltables` and `colorclass` libraries.
