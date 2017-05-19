@@ -207,7 +207,7 @@ class Daemon():
                         # Trying to receive instruction from client socket
                         try:
                             instruction = self.client_socket.recv(1048576)
-                        except EOFError:
+                        except (EOFError, OSError):
                             self.logger.warning('Client died while sending message, dropping received data.')
                             instruction = None
 
