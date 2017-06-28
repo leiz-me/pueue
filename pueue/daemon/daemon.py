@@ -249,7 +249,11 @@ class Daemon():
 
                                 self.logger.debug('Sending payload:')
                                 self.logger.debug(response)
-                                self.respond_client(response)
+                                try:
+                                    self.respond_client(response)
+                                except (BrokenPipeError):
+                                    self.logger.warning('Client disconnected during message dispatching. Function successfully executed anyway.')
+                                    instruction = None
                             else:
                                 self.respond_client({'message': 'Unknown Command',
                                                     'status': 'error'})
