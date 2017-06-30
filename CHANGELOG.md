@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.6]
+
+### Fixed
+- Prevent a daemon crash, if the client dies while daemon sends data.
+- Prevent endless loop if client dies while daemon receives data, because of unmanaged client socket.
+
+
+## [0.8.5]
+
+### Fixed
+- Prevent a daemon crash, if the client dies while daemon receives data.
+
+
+## [0.8.4]
+
+### Fixed
+- Fix default shell set function
+
+
+## [0.8.3]
+
+### Added
+- Allow to set a custom shell instead of `/bin/sh`.
+    This is done by callingthe `pueue config customShell`. Use `default` for `/bin/sh`.
+    By setting a custom shell it's possible to use aliases or environment variables.
+    Be careful! This probably causes some bugs, as every shell behaves differently.
+
 ## [0.8.2]
 
 ### Changed
