@@ -122,7 +122,7 @@ class Daemon():
     def respond_client(self, answer):
         """Generic function to send an answer to the client."""
         response = pickle.dumps(answer, -1)
-        self.client_socket.send(response)
+        self.client_socket.sendall(response)
         self.read_list.remove(self.client_socket)
         self.client_socket.close()
 
@@ -209,6 +209,9 @@ class Daemon():
                             instruction = self.client_socket.recv(1048576)
                         except (EOFError, OSError):
                             self.logger.warning('Client died while sending message, dropping received data.')
+                            # Remove client socket
+                            self.read_list.remove(self.client_socket)
+                            self.client_socket.close()
                             instruction = None
 
                         # Check for valid instruction
@@ -253,6 +256,9 @@ class Daemon():
                                     self.respond_client(response)
                                 except (BrokenPipeError):
                                     self.logger.warning('Client disconnected during message dispatching. Function successfully executed anyway.')
+                                    # Remove client socket
+                                    self.read_list.remove(self.client_socket)
+                                    self.client_socket.close()
                                     instruction = None
                             else:
                                 self.respond_client({'message': 'Unknown Command',
