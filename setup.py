@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='pueue',
     author='Arne Beer',
-    author_email='arne@twobeer.de',
+    author_email='privat@arne.beer',
     version='0.8.6',
     description='Pueue is a fancy queue for shell commands',
     keywords='shell queue command concurrent',
