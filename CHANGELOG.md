@@ -2,27 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.8.6]
+## [0.8.7]
+### Fixed
+- Prevent daemon crash if subprocesses contain invalid UTF-8 characters in `stderr` or `stdout`.
 
+
+## [0.8.6]
 ### Fixed
 - Prevent a daemon crash, if the client dies while daemon sends data.
 - Prevent endless loop if client dies while daemon receives data, because of unmanaged client socket.
 
 
 ## [0.8.5]
-
 ### Fixed
 - Prevent a daemon crash, if the client dies while daemon receives data.
 
 
 ## [0.8.4]
-
 ### Fixed
 - Fix default shell set function
 
 
 ## [0.8.3]
-
 ### Added
 - Allow to set a custom shell instead of `/bin/sh`.
     This is done by callingthe `pueue config customShell`. Use `default` for `/bin/sh`.
@@ -30,7 +31,6 @@ All notable changes to this project will be documented in this file.
     Be careful! This probably causes some bugs, as every shell behaves differently.
 
 ## [0.8.2]
-
 ### Changed
 - The `kill` command has been remodeled. Instead of always sending an `SigKill` it now allows you to specify the signal that should be sent (default is `SIGTERM`).  
     By default the signal will be sent to the processes spawned by the `shell` parent process. The new `-a/--all` flag is provided in case you want to send the signal to the parent process as well.  
@@ -40,7 +40,6 @@ All notable changes to this project will be documented in this file.
 
 
 ## [0.8.1]
-
 ### Fixed
 - Fixed missing return message for `send`.
 - Write queue more often. This prevents entries from disappearing after reboot.
@@ -48,7 +47,6 @@ All notable changes to this project will be documented in this file.
 
 
 ## [0.8.0]
-
 ### Added
 - Allow switching of `stashed` entries in queue.
 

@@ -10,6 +10,7 @@ from functools import reduce
 from colorclass import Color
 
 from pueue.client.factories import command_factory
+from pueue.daemon.files import get_descriptor_output
 
 from terminaltables import AsciiTable
 from terminaltables.terminal_io import terminal_size
@@ -220,7 +221,7 @@ def execute_show(args, root_dir):
     else:
         print('Stdout output:\n')
         stdoutDescriptor.seek(0)
-        print(stdoutDescriptor.read())
+        print(get_descriptor_output(stdoutDescriptor, key))
         print('\n\nStderr output:\n')
         stderrDescriptor.seek(0)
-        print(stderrDescriptor.read())
+        print(get_descriptor_output(stderrDescriptor, key))

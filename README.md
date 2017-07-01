@@ -59,7 +59,7 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
 `pueue switch index1 index2` Switch the entries at position `index1` and `index2`.  
 
 `pueue start [keys...]` This command has three different behaviors, depending on if and what kind of keys are given:  
-    1. If keys of paused processes are given, the processes will be started (`SIGCONT`), this happens even if the daemon is paused.  
+    1. If keys of paused processes are given, the processes will be started (`SIGCONT`), this happens even if the daemon is paused or if the max number of concurrent processes is reached.  
     2. If keys of queued or stashed processes are given, new processes will be spawned for those entries. This happens even if the daemon is paused or the max amount of processes is exceeded.  
     3. Otherwise the daemon will start to process the queue. This will start all paused processes (`SIGCONT`).  
 

@@ -6,6 +6,8 @@ import subprocess
 
 from datetime import datetime
 
+from pueue.daemon.files import get_descriptor_output
+
 
 class ProcessHandler():
     """Manage underlying processes.
@@ -106,10 +108,9 @@ class ProcessHandler():
 
                     descriptor = self.descriptors[key]
                     descriptor['stdout'].seek(0)
-                    output = descriptor['stdout'].read().replace('\n', '\n    ')
-
                     descriptor['stderr'].seek(0)
-                    error_output = descriptor['stderr'].read().replace('\n', '\n    ')
+                    output = get_descriptor_output(descriptor['stdout'], key, handler=self)
+                    error_output = get_descriptor_output(descriptor['stderr'], key, handler=self)
 
                     # Mark queue entry as finished and save returncode
                     self.queue[key]['returncode'] = process.returncode
