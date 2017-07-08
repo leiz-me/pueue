@@ -11,6 +11,7 @@ from pueue.client.displaying import (
 
 from pueue.client.manipulation import (
     execute_add,
+    execute_edit,
 )
 
 # Specifying commands
@@ -112,6 +113,12 @@ remove_subcommand.add_argument(
     help='The index of the command to be deleted.')
 remove_subcommand.set_defaults(func=print_command_factory('remove'))
 
+# Edit
+edit_subcommand = subparsers.add_parser(
+    'edit', help='Edit a specific command from the queue.')
+edit_subcommand.add_argument(
+    'key', type=int, help='The index of the command to be edited.')
+edit_subcommand.set_defaults(func=execute_edit)
 
 # Switch
 switch_subcommand = subparsers.add_parser(

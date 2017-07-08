@@ -1,11 +1,9 @@
 import os
-import pickle
+import sys
+import tempfile
 
-from pueue.client.socket import (
-    connect_socket,
-    receive_data,
-    process_response,
-)
+from subprocess import call
+from pueue.client.factories import command_factory, print_command_factory
 
 
 def execute_add(args, root_dir=None):
@@ -15,7 +13,6 @@ def execute_add(args, root_dir=None):
         args['command'] (list(str)): The actual programm call. Something like ['ls', '-a'] or ['ls -al']
         root_dir (string): The path to the root directory the daemon is running in.
     """
-    client = connect_socket(root_dir)
 
     # We accept a list of strings.
     # This is done to create a better commandline experience with argparse.
@@ -23,13 +20,42 @@ def execute_add(args, root_dir=None):
 
     # Send new instruction to daemon
     instruction = {
-        'mode': 'add',
         'command': command,
         'path': os.getcwd()
     }
-    data_string = pickle.dumps(instruction, -1)
-    client.send(data_string)
+    print_command_factory('add')(instruction, root_dir)
 
-    # Receive answer from daemon and print it
-    response = receive_data(client)
-    process_response(response)
+
+def execute_edit(args, root_dir=None):
+    """Edit a existing queue command in the daemon."""
+    # Get editor
+    EDITOR = os.environ.get('EDITOR', 'vim')
+    # Get command from server
+    key = args['key']
+    status = command_factory('status')({}, root_dir=root_dir)
+
+    # Check if queue is not empty, the entry exists and it's queued or stashed
+    if not isinstance(status['data'], str) and key in status['data']:
+        if status['data'][key]['status'] in ['queued', 'stashed']:
+            command = status['data'][key]['command']
+        else:
+            print("Entry is not 'queued' or 'stashed'")
+            sys.exit(1)
+    else:
+        print('No entry with this key')
+        sys.exit(1)
+
+    with tempfile.NamedTemporaryFile(suffix=".tmp") as tf:
+        tf.write(command.encode('utf-8'))
+        tf.flush()
+        call([EDITOR, tf.name])
+
+        # do the parsing with `tf` using regular File operations.
+        # for instance:
+        tf.seek(0)
+        edited_command = tf.read().decode('utf-8')
+
+    print_command_factory('edit')({
+        'key': key,
+        'command': edited_command,
+    }, root_dir=root_dir)

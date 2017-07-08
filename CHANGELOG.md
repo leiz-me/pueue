@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0]
+### Added
+- `edit` subcommand.
+    This command takes a key and opens your `$EDITOR` to update a command in the queue.
+
+### Fixed
+- Fixed logic bug, which showed all entries in the log data instead of only finished entries.
+
+
 ## [0.8.7]
 ### Fixed
 - Prevent daemon crash if subprocesses contain invalid UTF-8 characters in `stderr` or `stdout`.
