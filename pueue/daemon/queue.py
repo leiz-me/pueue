@@ -78,7 +78,7 @@ class Queue():
 
     def read(self):
         """Read the queue of the last pueue session or set `self.queue = {}`."""
-        queue_path = os.path.join(self.config_dir, '/queue')
+        queue_path = os.path.join(self.config_dir, 'queue')
         if os.path.exists(queue_path):
             queue_file = open(queue_path, 'rb')
             try:
@@ -93,7 +93,7 @@ class Queue():
 
     def write(self):
         """Write the current queue to a file. We need this to continue an earlier session."""
-        queue_path = self.config_dir + '/queue'
+        queue_path = os.path.join(self.config_dir, 'queue')
         queue_file = open(queue_path, 'wb+')
         try:
             pickle.dump(self.queue, queue_file, -1)

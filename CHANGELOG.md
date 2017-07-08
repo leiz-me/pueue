@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed logic bug, which showed all entries in the log data instead of only finished entries.
+- Fixed wrong queue log path. Queues will now be restored properly after restart again.
 
 
 ## [0.8.7]
