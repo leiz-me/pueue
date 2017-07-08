@@ -86,7 +86,7 @@ class Logger():
 
         # Format, color and write log
         for key, logentry in log.items():
-            if 'returncode' in logentry:
+            if logentry.get('returncode') is not None:
                 try:
                     # Get returncode color:
                     returncode = logentry['returncode']
@@ -98,7 +98,7 @@ class Logger():
                     # Write command id with returncode and actual command
                     log_file.write(
                         Color('{autoyellow}' + 'Command #{} '.format(key) + '{/autoyellow}') +
-                        'exited with returncode {}: '.format(returncode) +
+                        'exited with returncode {}: \n'.format(returncode) +
                         '"{}" \n'.format(logentry['command'])
                     )
                     # Write path
