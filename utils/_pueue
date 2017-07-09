@@ -7,57 +7,65 @@
 # Authors
 # -------
 #
-#  * Arne Beer (https://github.com/nukesor)
+#  * Arne Beer (privat@arne.beer)
 #
 # ----------------------------------------------------
 
-
 _pueue_commands () {
-  declare -a subcommands
-  subcommands=(add remove switch send status show log reset pause stop start kill)
-  _describe -t pueue-commands "pueue subcommands" subcommands
+    declare -a subcommands
+    subcommands=(add remove edit config switch status  start pause kill send show log clear reset)
+    _describe -t pueue-commands "pueue subcommands" subcommands
 }
 
 _pueue_subcommand () {
-  case "$words[1]" in
-    (show)
-      _arguments '--watch[watch the output of the current process]:'
-      ;;
-    (kill)
-      _arguments '--remove[The current entry will be removed from the queue.]:'
-      ;;
-    (stop)
-      _arguments '--remove[The current entry will be removed from the queue.]:'
-      ;;
-    (add)
-      _alternative 'command:commands:{_command_names}'
-      ;;
-    (*)
-      _message 'Unknown subcommand'
-  esac
+    case "$words[1]" in
+        (add)
+            _alternative 'command:commands:{_command_names}'
+            ;;
+        (show)
+            _arguments \
+                '(-w --watch)'{-w,--watch}'[watch the output of the current process]' \
+                '(-k+ --key)'{-k,--key}'[The key of the process to show. Default is the longest running process.]:key'
+            ;;
+        (kill)
+            _arguments \
+                '(-s+ --signal)'{-s,--signal=}'[The kill signal]:signal:(hup int quit kill term cont stop)' \
+                '(-a --all)'{-a,--all}'[Specify, if the shell parent process should be killed as well.]'
+            ;;
+        (pause)
+            _arguments \
+                '(-w --wait)'{-w,--wait}'[If the daemon should be paused, wait for running processes to finish on their own.]'
+            ;;
+        (config)
+            _arguments \
+                '1:config:(maxProcesses customShell)'
+            ;;
+        (*)
+            _message 'Unknown subcommand'
+    esac
 }
 
 _pueue () {
-  local curcontext="$curcontext" state line
-  typeset -A opt_args
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
 
-  _arguments -C \
-    '-h[get help]:' \
-    '--daemon[Start the daemon]:' \
-    '--no-daemon[Start the daemon bound to the shell]:' \
-    '--stop-daemon[Stop the daemon]:' \
-    '(-): :->command' \
-    '(-)*:: :->arguments'
+    _arguments -C \
+        '-h[get help]:' \
+        '--daemon[Start the daemon]:' \
+        '--no-daemon[Start the daemon bound to the shell]:' \
+        '--stop-daemon[Stop the daemon]:' \
+        '(-): :->command' \
+        '(-)*:: :->arguments'
 
-  case $state in
-    (command)
-      _pueue_commands
-      ;;
-    (arguments)
-      curcontext=${curcontext%:*:*}:pueue-$words[1]:
-      _pueue_subcommand
-      ;;
-  esac
+    case $state in
+        (command)
+            _pueue_commands
+            ;;
+        (arguments)
+            curcontext=${curcontext%:*:*}:pueue-$words[1]:
+            _pueue_subcommand
+            ;;
+    esac
 }
 
 _pueue "$@"

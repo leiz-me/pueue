@@ -204,19 +204,7 @@ enqueue_subcommand.add_argument(
 enqueue_subcommand.set_defaults(func=print_command_factory('enqueue'))
 
 
-def does_not_represent_int(string):
-    try:
-        int(string)
-        return False
-    except:
-        return True
-
-
-case_sensitive_signals = list(signals.keys())
-case_sensitive_signals += list(
-    map(lambda x: x.upper(),
-        filter(does_not_represent_int, case_sensitive_signals))
-)
+case_sensitive_signals = list(signals.keys())[2::3]
 
 # Kills the current running process
 kill_subcommand = subparsers.add_parser(

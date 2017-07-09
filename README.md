@@ -132,7 +132,8 @@ Afterwards every user can start/enable their own session with:
 
 ### ZSH Completion
 
-If you use zsh, place `_pueue` in a folder, that is contained in your `FPATH` environment variable. This script will be probably added to zsh-users/zsh-completions, when it is finished.
+Run `make completion`, which copies the completion file to `/usr/share/zsh/site-functions/` or place `_pueue` in a folder, that is contained in your `FPATH` environment variable.  
+This script will be probably added to zsh-users/zsh-completions, when it is finished.
 
 ### Pueue status querying script for `i3pystatus`
 

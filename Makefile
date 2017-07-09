@@ -2,6 +2,9 @@
 
 default: dev-install
 
+completion:
+	sudo cp ./utils/_pueue /usr/share/zsh/site-functions/_pueue
+
 dev-install:
 	sudo python setup.py develop
 
