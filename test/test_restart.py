@@ -50,7 +50,7 @@ def test_restart_multiple(daemon_setup):
 
     # Restart the commands 0 and 3. This should clone the entries and add it to the queue.
     response = command_factory('pause')()
-    response = command_factory('restart')({'keys': [0, 3]})
+    command_factory('restart')({'keys': [0, 3]})
     assert response['status'] == 'success'
 
     status = command_factory('status')()

@@ -2,6 +2,7 @@ import time
 from test.helper import (
     execute_add,
     wait_for_process,
+    wait_for_processes,
     command_factory,
 )
 
@@ -125,8 +126,7 @@ def test_waiting_pause_multiple(daemon_setup, multiple_setup):
     # Pause the daemon with `'wait': True`
     command_factory('pause')({'wait': True})
     # The paused daemon should wait for the processes to finish
-    status = wait_for_process(0)
-    status = wait_for_process(1)
+    status = wait_for_processes([0, 1])
     assert status['data'][0]['status'] == 'done'
     assert status['data'][1]['status'] == 'done'
     assert status['data'][2]['status'] == 'queued'
@@ -179,8 +179,7 @@ def test_start_multiple_after_pause(daemon_setup, multiple_setup):
     assert status['data'][1]['status'] == 'running'
 
     # Wait for the process to finish
-    status = wait_for_process(0)
-    status = wait_for_process(1)
+    status = wait_for_processes([0, 1])
     assert status['data'][0]['status'] == 'done'
     assert status['data'][1]['status'] == 'done'
 

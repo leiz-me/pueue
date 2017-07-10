@@ -14,7 +14,7 @@ def test_kill_remove_resume(daemon_setup):
     execute_add('ls')
     execute_add('sleep 60')
     execute_add('ls')
-    status = wait_for_process(2)
+    wait_for_process(2)
 
     # Trigger the clear
     command_factory('clear')()

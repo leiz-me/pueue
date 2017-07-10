@@ -4,6 +4,7 @@ import pytest
 from test.helper import (
     execute_add,
     wait_for_process,
+    wait_for_processes,
     command_factory,
 )
 
@@ -17,7 +18,7 @@ def test_kill(daemon_setup, signal):
     """Kill a running process."""
     execute_add('sleep 60')
     command_factory('kill')({'signal': signal})
-    status = command_factory('status')()
+    status = wait_for_process(0)
     assert status['status'] == 'paused'
     assert status['data'][0]['status'] == 'failed'
 
@@ -33,7 +34,7 @@ def test_kill_all(daemon_setup, multiple_setup, signal):
     )
 
     command_factory('kill')({'signal': signal})
-    status = command_factory('status')()
+    status = wait_for_processes([0, 1, 2])
     assert status['status'] == 'paused'
     assert status['data'][0]['status'] == 'failed'
     assert status['data'][1]['status'] == 'failed'
@@ -53,7 +54,7 @@ def test_kill_multiple(daemon_setup, multiple_setup, signal):
 
     # Only kill two of three running processes and wait for them being processed.
     command_factory('kill')({'keys': [0, 2], 'signal': signal})
-    status = wait_for_process(2)
+    status = wait_for_processes([0, 2])
 
     # Two should be failed, and two should be running
     assert status['status'] == 'running'
@@ -72,8 +73,8 @@ def test_kill_single(daemon_setup):
     # Unfortunately this is necessary as the shell parent process needs some time to spawn it's children
     time.sleep(1)
     # Kill the children of the parent process
-    status = command_factory('kill')({'keys': [0], 'signal': 'sigkill'})
-    status = command_factory('status')()
+    command_factory('kill')({'keys': [0], 'signal': 'sigkill'})
+    command_factory('status')()
     status = wait_for_process(0)
     assert status['status'] == 'running'
     assert status['data'][0]['status'] == 'failed'
@@ -89,7 +90,7 @@ def test_kill_single_with_multiple_commands(daemon_setup):
     time.sleep(1)
 
     # Kill the children of the parent process
-    status = command_factory('kill')({'keys': [0], 'signal': 'sigkill'})
+    command_factory('kill')({'keys': [0], 'signal': 'sigkill'})
 
     # Give the shell process some time to clean the old process and spawn the new one.
     time.sleep(1)
@@ -110,12 +111,10 @@ def test_kill_shell_of_single_with_multiple_commands(daemon_setup):
     time.sleep(1)
 
     # Kill the shell process as well as the child processes.
-    status = command_factory('kill')({'keys': [0], 'signal': 'sigkill', 'all': True})
+    command_factory('kill')({'keys': [0], 'signal': 'sigkill', 'all': True})
 
     # Give the shell process some time to die and pueue to clean up the mess.
-    time.sleep(1)
-
+    status = wait_for_process(0)
     # Assert that the queue entry is finished and failed
-    status = command_factory('status')()
     assert status['status'] == 'running'
     assert status['data'][0]['status'] == 'failed'

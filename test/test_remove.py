@@ -1,6 +1,6 @@
 from test.helper import (
     execute_add,
-    wait_for_process,
+    wait_for_processes,
 )
 from test.helper import command_factory
 
@@ -65,8 +65,7 @@ def test_remove_multiple_specific(daemon_setup):
 
     # Start 0, 1 and 2 and wait for the `failed` and `done` entry to finish.
     response = command_factory('start')({'keys': [0, 1, 2]})
-    wait_for_process(0)
-    status = wait_for_process(2)
+    status = wait_for_processes([0, 2])
 
     assert status['data'][0]['status'] == 'failed'
     assert status['data'][1]['status'] == 'running'
