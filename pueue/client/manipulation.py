@@ -27,7 +27,12 @@ def execute_add(args, root_dir=None):
 
 
 def execute_edit(args, root_dir=None):
-    """Edit a existing queue command in the daemon."""
+    """Edit a existing queue command in the daemon.
+
+    Args:
+        args['key'] int: The key of the queue entry to be edited
+        root_dir (string): The path to the root directory the daemon is running in.
+    """
     # Get editor
     EDITOR = os.environ.get('EDITOR', 'vim')
     # Get command from server
