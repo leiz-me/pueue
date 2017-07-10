@@ -55,8 +55,8 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
 `pueue config` This command allows to set different config values without editing the config file and restarting the daemon. Look at `pueue config -h` for more information.  
 
 `pueue add 'command'` Add a command to the queue. It can be used without quotation marks, but a `--` may be necessary if you want to pass parameters (`pueue add -- ls -al`). Also note that bash specific syntax like `|`, `&&` or `;` might cause unwanted behavior without quotation marks.  
+`pueue edit [key]` Edit the command of a specific `queued` or `stashed` entry in you `$EDITOR`.  
 `pueue remove [keys...]` Remove the specified entries. Running processes can't be removed.  
-`pueue edit key` Edit the command of a specific `queued` or `stashed` entry in you `$EDITOR`.  
 `pueue stash [keys...]` Stash queued entries for later processing. They won't be processed by the daemon, but can be manually enqueued again.  
 `pueue enqueue [keys...]` Enqueue stashed entries. The entries will be normally processed.  
 `pueue switch index1 index2` Switch the entries at position `index1` and `index2`.  
@@ -81,12 +81,12 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
  - If no keys are given, send the signal to all running processes. If the signal is `sigint`, `sigterm` or `sigkill` the daemon will be paused.  
 
 
-`pueue show --key --watch ` Show the output of `--key` or the oldest running process.  
+`pueue show --watch -k [key]` Show the output of `key` or the oldest running process.  
     `show --watch` will continually show the stdout output of the subprocess in a `curses` session.  
     `show` without `--watch` will print the stderr as well. This can be useful if the subprocess prompts for user input (This is often piped to stderr).  
 
 `pueue log [keys...]` Print the output and status of all finished processes or of the specified finished processes.  
-`pueue send 'input'` Send a string to the subprocess's stdin. In case a process prompts for user input, you can use this to interact with the subprocess.  
+`pueue send [input]` Send a string to the subprocess's stdin. In case a process prompts for user input, you can use this to interact with the subprocess.  
 The stdin pipe is flushed after every `send` command. To simulate a `\n` you need to add a newline in your string:
 
         pueue send 'y
