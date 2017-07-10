@@ -75,8 +75,6 @@ class Daemon():
             self.paused = True
 
         # Variables for handling sockets and child process
-        self.client_address = None
-        self.client_socket = None
         self.process = None
         self.read_list = [self.socket]
 
@@ -119,12 +117,12 @@ class Daemon():
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
 
-    def respond_client(self, answer):
+    def respond_client(self, answer, socket):
         """Generic function to send an answer to the client."""
         response = pickle.dumps(answer, -1)
-        self.client_socket.sendall(response)
-        self.read_list.remove(self.client_socket)
-        self.client_socket.close()
+        socket.sendall(response)
+        self.read_list.remove(socket)
+        socket.close()
 
     def read_config(self):
         """Read a previous configuration file or create a new with default values."""
@@ -199,19 +197,19 @@ class Daemon():
                         # Listening for clients to connect.
                         # Client sockets are added to readlist to be processed.
                         try:
-                            self.client_socket, self.client_address = self.socket.accept()
-                            self.read_list.append(self.client_socket)
+                            client_socket, client_address = self.socket.accept()
+                            self.read_list.append(client_socket)
                         except:
                             self.logger.warning('Daemon rejected client')
                     else:
                         # Trying to receive instruction from client socket
                         try:
-                            instruction = self.client_socket.recv(1048576)
+                            instruction = waiting_socket.recv(1048576)
                         except (EOFError, OSError):
                             self.logger.warning('Client died while sending message, dropping received data.')
                             # Remove client socket
-                            self.read_list.remove(self.client_socket)
-                            self.client_socket.close()
+                            self.read_list.remove(waiting_socket)
+                            waiting_socket.close()
                             instruction = None
 
                         # Check for valid instruction
@@ -222,8 +220,8 @@ class Daemon():
                             except EOFError:
                                 # Instruction is ignored if it can't be unpickled
                                 self.logger.error('Received message is incomplete, dropping received data.')
-                                self.read_list.remove(self.client_socket)
-                                self.client_socket.close()
+                                self.read_list.remove(waiting_socket)
+                                waiting_socket.close()
                                 # Set invalid payload
                                 payload = {'mode': ''}
 
@@ -254,16 +252,16 @@ class Daemon():
                                 self.logger.debug('Sending payload:')
                                 self.logger.debug(response)
                                 try:
-                                    self.respond_client(response)
+                                    self.respond_client(response, waiting_socket)
                                 except (BrokenPipeError):
                                     self.logger.warning('Client disconnected during message dispatching. Function successfully executed anyway.')
                                     # Remove client socket
-                                    self.read_list.remove(self.client_socket)
-                                    self.client_socket.close()
+                                    self.read_list.remove(waiting_socket)
+                                    waiting_socket.close()
                                     instruction = None
                             else:
                                 self.respond_client({'message': 'Unknown Command',
-                                                    'status': 'error'})
+                                                    'status': 'error'}, waiting_socket)
         except:
             self.logger.exception()
 

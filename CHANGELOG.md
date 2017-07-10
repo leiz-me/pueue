@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.2]
+### Changed
+- Some additions and changes in the zsh auto-completion script
+
+### Fixed
+- Multi client socket handling.
+
+
 ## [0.9.0]
 ### Added
 - `edit` subcommand.
