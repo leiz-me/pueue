@@ -55,10 +55,10 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
 `pueue config` This command allows to set different config values without editing the config file and restarting the daemon. Look at `pueue config -h` for more information.  
 
 `pueue add 'command'` Add a command to the queue. It can be used without quotation marks, but a `--` may be necessary if you want to pass parameters (`pueue add -- ls -al`). Also note that bash specific syntax like `|`, `&&` or `;` might cause unwanted behavior without quotation marks.  
-`pueue remove keys...` Remove the specified entries. Running processes can't be removed.  
+`pueue remove [keys...]` Remove the specified entries. Running processes can't be removed.  
 `pueue edit key` Edit the command of a specific `queued` or `stashed` entry in you `$EDITOR`.  
-`pueue stash keys...` Stash queued entries for later processing. They won't be processed by the daemon, but can be manually enqueued again.  
-`pueue enqueue keys...` Enqueue stashed entries. The entries will be normally processed.  
+`pueue stash [keys...]` Stash queued entries for later processing. They won't be processed by the daemon, but can be manually enqueued again.  
+`pueue enqueue [keys...]` Enqueue stashed entries. The entries will be normally processed.  
 `pueue switch index1 index2` Switch the entries at position `index1` and `index2`.  
 
 `pueue start [keys...]` This command has three different behaviors, depending on if and what kind of keys are given:  
