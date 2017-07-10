@@ -100,31 +100,31 @@ logs_subcommand.set_defaults(func=execute_log)
 
 # Add
 add_subcommand = subparsers.add_parser(
-    'add', help='Add a command to the queue.')
+    'add', help='Add an entry to the queue.')
 add_subcommand.add_argument(
     'command', type=str, nargs='+', help='The command to be added.')
 add_subcommand.set_defaults(func=execute_add)
 
 # Remove
 remove_subcommand = subparsers.add_parser(
-    'remove', help='Remove a specific command from the queue.')
+    'remove', help='Remove a specific entry from the queue.')
 remove_subcommand.add_argument(
     'keys', type=int, nargs='+',
-    help='The index of the command to be deleted.')
+    help='The indices of the entries to be removed.')
 remove_subcommand.set_defaults(func=print_command_factory('remove'))
 
 # Edit
 edit_subcommand = subparsers.add_parser(
-    'edit', help='Edit a specific command from the queue.')
+    'edit', help='Edit a specific entry command from the queue.')
 edit_subcommand.add_argument(
-    'key', type=int, help='The index of the command to be edited.')
+    'key', type=int, help='The index of the entry to be edited.')
 edit_subcommand.set_defaults(func=execute_edit)
 
 # Switch
 switch_subcommand = subparsers.add_parser(
-    'switch', help='Switch two command in the queue.')
-switch_subcommand.add_argument('first', help='The first command', type=int)
-switch_subcommand.add_argument('second', help='The second command', type=int)
+    'switch', help='Switch two entries in the queue.')
+switch_subcommand.add_argument('first', help='The first entry', type=int)
+switch_subcommand.add_argument('second', help='The second entry', type=int)
 switch_subcommand.set_defaults(func=print_command_factory('switch'))
 
 
@@ -134,20 +134,20 @@ send_subcommand = subparsers.add_parser(
 send_subcommand.add_argument('input', help='The input string', type=str)
 send_subcommand.add_argument(
     'key', type=int,
-    help='The index of the process, the message should be send to.'
+    help='The index of the process the message should be send to.'
 )
 send_subcommand.set_defaults(func=print_command_factory('send'))
 
 
 # Reset
 reset_subcommand = subparsers.add_parser(
-    'reset', help='Kill the current command, reset queue and rotate logs.')
+    'reset', help='Kill all running processes, reset queue and rotate logs.')
 reset_subcommand.set_defaults(func=print_command_factory('reset'))
 
 
 # Clear
 clear_subcommand = subparsers.add_parser(
-    'clear', help='Remove all `done` or `failed` commands from the queue. This will rotate logs as well.')
+    'clear', help='Remove all `done` or `failed` entries from the queue. This will rotate logs as well.')
 clear_subcommand.set_defaults(func=print_command_factory('clear'))
 
 
@@ -160,7 +160,7 @@ pause_subcommand.add_argument(
 )
 pause_subcommand.add_argument(
     'keys', type=int, nargs='*',
-    help="The indices of the entries to be paused. The Daemon won't pause."
+    help="The indices of the entries to be paused. The daemon won't pause."
 )
 pause_subcommand.set_defaults(func=print_command_factory('pause'))
 
@@ -170,7 +170,7 @@ start_subcommand = subparsers.add_parser(
     'start', help='Daemon will start all paused processes and continue to process the queue.')
 start_subcommand.add_argument(
     'keys', type=int, nargs='*',
-    help="The indices of the entries to be started. The daemon will not start in case it's paused."
+    help="The indices of the entries to be started. The daemon won't start in case it's paused."
 )
 start_subcommand.set_defaults(func=print_command_factory('start'))
 
@@ -186,20 +186,20 @@ restart_subcommand.set_defaults(func=print_command_factory('restart'))
 
 # Stash command
 stash_subcommand = subparsers.add_parser(
-    'stash', help="The specified command won't be processed by the daemon until it's enqueued.")
+    'stash', help="The specified entry won't be processed by the daemon until it's enqueued.")
 stash_subcommand.add_argument(
     'keys', type=int, nargs='+',
-    help='The indices of the commands to be stashed.'
+    help='The indices of the entries to be stashed.'
 )
 stash_subcommand.set_defaults(func=print_command_factory('stash'))
 
 
 # Enqueue command
 enqueue_subcommand = subparsers.add_parser(
-    'enqueue', help="The specified command's status will be set to 'queued'.")
+    'enqueue', help="The specified entry's status will be set to 'queued'.")
 enqueue_subcommand.add_argument(
     'keys', type=int, nargs='+',
-    help='The indices of the commands to be enqueued.'
+    help='The indices of the entries to be enqueued.'
 )
 enqueue_subcommand.set_defaults(func=print_command_factory('enqueue'))
 
@@ -208,10 +208,10 @@ case_sensitive_signals = list(signals.keys())[2::3]
 
 # Kills the current running process
 kill_subcommand = subparsers.add_parser(
-    'kill', help='Kill all processes and pause the Daemon.')
+    'kill', help="Kill all processes and pause the Daemon if the signal is 'sigint', 'sigterm' or 'sigkill'.")
 kill_subcommand.add_argument(
     '-s', '--signal', choices=case_sensitive_signals,
-    help='All running processes/the selected process will be removed from the queue.',
+    help='The signal sent to the processes.',
 )
 kill_subcommand.add_argument(
     '-a', '--all', action='store_true',
