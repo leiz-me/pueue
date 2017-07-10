@@ -59,7 +59,7 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
 `pueue remove [keys...]` Remove the specified entries. Running processes can't be removed.  
 `pueue stash [keys...]` Stash queued entries for later processing. They won't be processed by the daemon, but can be manually enqueued again.  
 `pueue enqueue [keys...]` Enqueue stashed entries. The entries will be normally processed.  
-`pueue switch index1 index2` Switch the entries at position `index1` and `index2`.  
+`pueue switch [key_1] [key_2]` Switch the entries at position `key_1` and `key_2`.  
 
 `pueue start [keys...]` This command has three different behaviors, depending on if and what kind of keys are given:  
     1. If keys of paused processes are given, the processes will be started (`SIGCONT`), this happens even if the daemon is paused or if the max number of concurrent processes is reached.  
