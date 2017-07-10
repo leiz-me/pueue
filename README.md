@@ -17,7 +17,7 @@ It provides functionality for:
 
 ## Why should I use it?
 
-Almost everybody who lives on the command line knows the situation, when one needed to unzip or transfer huge amounts of data in different directories.
+Almost everybody who lives on the commandline knows the situation, when one needs to unzip or transfer huge amounts of data in different directories.
 
 This normally ends with about 10 open terminals/tmux sessions and an overchallenged hard drive.
 
