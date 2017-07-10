@@ -6,29 +6,29 @@
 [![Test status](https://travis-ci.org/Nukesor/pueue.svg?branch=master)](https://travis-ci.org/Nukesor/pueue)
 
 
-Pueue is a daemon designed for sequential and parallel execution of long running heavy load tasks. Not being bound to any terminal it is possible to check on your processes from every terminal or using the API. And the best part is that the queue will be processed by the daemon, even if you exit your ssh session.
+Pueue is a daemon designed for sequential and parallel execution of long running heavy load tasks. Not being bound to any terminal it is possible to check on your processes from any terminal or using the API. And the best part is that the queue will be processed by the daemon, even if you exit your ssh session.
 
 It provides functionality for:
 - Easy output inspection.
-- Interaction with the running process
+- Interaction with running processes
 - Manipulation of the scheduled task order
-- Running multiple tasks at once (You can decide how many concurrent tasks you want to run.)
+- Running multiple tasks at once (You can decide how many concurrent tasks you want to run)
 
 
 ## Why should I use it?
 
-Pretty much everybody who lives on the command line had this situation, when one needed to unzip or transfer huge amounts of data in different directories.
+Almost everybody who lives on the command line knows the situation, when one needed to unzip or transfer huge amounts of data in different directories.
 
 This normally ends with about 10 open terminals/tmux sessions and an overchallenged hard drive.
 
-Pueue is specifically designed for those situations. It executes long running tasks in their respective directories, without being bound to any terminal.  
+Pueue is specifically designed for these situations. It executes long running tasks in their respective directories, without being bound to any terminal.  
 
-Just a few possible applications:
+Here a few possible applications:
 
-- Long running compression tasks
+- Compression tasks
 - Movie encoding
-- Copying stuff
-- rsync tasks
+- Copying huge amounts of stuff
+- `rsync` tasks
 
 If I got your attention, give it a try!  
 If you think this is awesome, help me, join the development and create some PRs or suggest some improvements.
@@ -97,7 +97,6 @@ The stdin pipe is flushed after every `send` command. To simulate a `\n` you nee
 The configuration file of pueue is located in `~/.config/pueue/pueue.ini`.
 
         [default]
-        stopAtError = True
         resumeAfterStart = False
         maxProcesses = 1
         customShell = default
@@ -105,7 +104,6 @@ The configuration file of pueue is located in `~/.config/pueue/pueue.ini`.
         [log]
         logTime = 1209600
 
-- `stopAtError = True` Determines if the demon should enter paused state, if a process in the queue fails.  
 - `resumeAfterStart = False` If you want pueue to instantly resume a queue from the last session, set this value to `True`.  
 - `maxProcesses = 1` Determines how many tasks should be processed concurrently.  
 - `customShell = default` The path to the custom shell that should be used. Enter `default` for `/bin/sh`.  
@@ -118,7 +116,7 @@ The configuration file of pueue is located in `~/.config/pueue/pueue.ini`.
 
 ## Logs 
 
-All logs can be found in `~/.shared/pueue/*.log`. Logs of previous pueue session will be rotated and contain a timestamp in the name.  
+All logs can be found in `~/.shared/pueue/*.log`. Logs of previous pueue sessions will be rotated and contain a timestamp in the name.  
 In case the daemon fails or something goes wrong, there is a separate log for the daemon at `~/.shared/pueue/daemon.log`.
 If the daemon crashes, please send the stack trace from this log!
 
@@ -147,7 +145,7 @@ Regards to Robpol86 for providing the awesome `terminaltables` and `colorclass` 
 And thanks to thesharp for the extremely useful `daemonize` library.
 
 ## Progress:
-Pueue already works and is frequently used. There might be some small bugs, but I didn't encounter something serious in quite a while.
+Pueue already works and is used frequently. There might be some small bugs, but I didn't encounter something serious in quite a while.
 
 Copyright &copy; 2016 Arne Beer ([@Nukesor](https://github.com/Nukesor))
 

@@ -139,7 +139,6 @@ class Daemon():
                 self.logger.exception()
 
         self.config['default'] = {
-            'stopAtError': True,
             'resumeAfterStart': False,
             'maxProcesses': 1,
             'customShell': 'default',
