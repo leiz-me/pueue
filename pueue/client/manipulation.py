@@ -39,7 +39,7 @@ def execute_edit(args, root_dir=None):
     key = args['key']
     status = command_factory('status')({}, root_dir=root_dir)
 
-    # Check if queue is not empty, the entry exists and it's queued or stashed
+    # Check if queue is not empty, the entry exists and is queued or stashed
     if not isinstance(status['data'], str) and key in status['data']:
         if status['data'][key]['status'] in ['queued', 'stashed']:
             command = status['data'][key]['command']
