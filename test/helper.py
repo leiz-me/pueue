@@ -21,7 +21,7 @@ def execute_add(command):
     command_factory('add')(payload)
 
 
-def wait_for_process(key, timeout=10):
+def wait_for_process(key, timeout=20):
     start = datetime.datetime.now()
     threshold = datetime.timedelta(seconds=timeout)
 
@@ -35,7 +35,7 @@ def wait_for_process(key, timeout=10):
     return status
 
 
-def wait_for_processes(keys, timeout=10):
+def wait_for_processes(keys, timeout=30):
     start = datetime.datetime.now()
     threshold = datetime.timedelta(seconds=timeout)
 
