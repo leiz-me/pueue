@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1]
+### Fixed
+- Argparse help messages
+
+### Added
+- Script for checking remote status of pueue with ssh
+
+
+## [1.0.0]
+### Added
+- Tests and travis support. Stable release
+
+
 ## [0.9.2]
 ### Changed
 - Some additions and changes in the zsh auto-completion script
