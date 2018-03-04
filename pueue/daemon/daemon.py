@@ -203,7 +203,11 @@ class Daemon():
                     else:
                         # Trying to receive instruction from client socket
                         try:
-                            instruction = waiting_socket.recv(1048576)
+                            instruction = b""
+                            while True:
+                                packet = waiting_socket.recv(4096)
+                                if not packet: break
+                                instruction += packet
                         except (EOFError, OSError):
                             self.logger.warning('Client died while sending message, dropping received data.')
                             # Remove client socket

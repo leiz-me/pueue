@@ -13,7 +13,11 @@ def receive_data(socket):
     Returns:
         dir or string: The unpickled answer.
     """
-    answer = socket.recv(1048576)
+    answer = b""
+    while True:
+        packet = socket.recv(4096)
+        if not packet: break
+        answer += packet
     response = pickle.loads(answer)
     socket.close()
     return response
