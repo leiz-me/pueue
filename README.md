@@ -8,7 +8,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/pueue.svg)](https://pypi.python.org/pypi/pueue)
 
 
-Pueue is a commandline management tool for sequential and parallel execution of long running tasks. Not being bound to any terminal it is possible to check on your processes from any terminal or using the API. And the best part is that the queue will be processed by the daemon, even if you exit your ssh session.
+Pueue is a command line queue management tool for sequential and parallel execution of long running tasks. Not being bound to any terminal it is possible to check on your processes from any terminal or using the API. And the best part is that the queue will be processed by the daemon, even if you exit your ssh session.
 It doesn't work for remote machines though, as the communication happens via unix sockets. You need to `ssh` into your machine to communicate with the daemon.
 
 It provides functionality for:
