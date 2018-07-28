@@ -27,8 +27,8 @@ def execute_status(args, root_dir=None):
 
     Args:
         root_dir (string): The path to the root directory the daemon is running in.
-    """
 
+    """
     status = command_factory('status')({}, root_dir=root_dir)
     # First rows, showing daemon status
     if status['status'] == 'running':
@@ -107,11 +107,12 @@ def execute_status(args, root_dir=None):
 
 def execute_log(args, root_dir):
     """Print the current log file.
+
     Args:
         args['keys'] (int): If given, we only look at the specified processes.
         root_dir (string): The path to the root directory the daemon is running in.
-    """
 
+    """
     # Print the logs of all specified processes
     if args.get('keys'):
         config_dir = os.path.join(root_dir, '.config/pueue')
@@ -120,7 +121,7 @@ def execute_log(args, root_dir):
             queue_file = open(queue_path, 'rb')
             try:
                 queue = pickle.load(queue_file)
-            except:
+            except Exception:
                 print('Queue log file seems to be corrupted. Aborting.')
                 return
             queue_file.close()
@@ -162,8 +163,8 @@ def execute_show(args, root_dir):
         args['watch'] (bool): If True, we open a curses session and tail
                               the output live in the console.
         root_dir (string): The path to the root directory the daemon is running in.
-    """
 
+    """
     key = None
     if args.get('key'):
         key = args['key']
@@ -212,7 +213,7 @@ def execute_show(args, root_dir):
                 stdscr.addstr(0, 0, message)
                 stdscr.refresh()
                 time.sleep(2)
-        except:
+        except Exception:
             # Curses cleanup
             curses.nocbreak()
             stdscr.keypad(False)

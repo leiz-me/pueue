@@ -1,9 +1,9 @@
+"""Helper for file handling."""
 import os
 
 
 def cleanup(config_dir):
-    """Removes temporary stderr and stdout files as well as the daemon socket."""
-
+    """Remove temporary stderr and stdout files as well as the daemon socket."""
     stdout_path = os.path.join(config_dir, 'pueue.stdout')
     stderr_path = os.path.join(config_dir, 'pueue.stderr')
     if os._exists(stdout_path):

@@ -1,3 +1,4 @@
+"""The pueue logger."""
 import os
 import sys
 import time
@@ -49,18 +50,23 @@ class Logger():
         self.logger.addHandler(file_handler)
 
     def debug(self, message):
+        """Debug message."""
         self.logger.debug(message)
 
     def info(self, message):
+        """Info message."""
         self.logger.info(message)
 
     def warning(self, message):
+        """Warning message."""
         self.logger.warning(message)
 
     def error(self, message):
+        """Error message."""
         self.logger.error(message)
 
     def exception(self, message=''):
+        """Exception message."""
         self.logger.exception(message)
 
     def rotate(self, log):

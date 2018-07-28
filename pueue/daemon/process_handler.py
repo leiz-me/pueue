@@ -15,11 +15,9 @@ class ProcessHandler():
     This class is responsible for spawning, handling and supervising processes.
     The ProcessHandler is capable of running a pool of processes.
     """
-    def __init__(self, queue, logger, config_dir):
-        """Initializes the process handler.
 
-        Create member variables.
-        """
+    def __init__(self, queue, logger, config_dir):
+        """Initialize a new process handler and create member variables."""
         self.config_dir = config_dir
         self.queue = queue
         self.logger = logger
@@ -92,8 +90,7 @@ class ProcessHandler():
             os.remove(self.descriptors[number]['stderr_path'])
 
     def check_finished(self):
-        """Poll all processes and handle any finished processes.
-        """
+        """Poll all processes and handle any finished processes."""
         changed = False
         for key in list(self.processes.keys()):
             # Poll process and check if it finshed
@@ -149,6 +146,7 @@ class ProcessHandler():
         return changed
 
     def check_for_new(self):
+        """Check if we can start a new process."""
         free_slots = self.max_processes - len(self.processes)
         for item in range(free_slots):
             key = self.queue.next()
@@ -156,6 +154,7 @@ class ProcessHandler():
                 self.spawn_new(key)
 
     def spawn_new(self, key):
+        """Spawn a new task and save it to the queue."""
         # Check if path exists
         if not os.path.exists(self.queue[key]['path']):
             self.queue[key]['status'] = 'failed'

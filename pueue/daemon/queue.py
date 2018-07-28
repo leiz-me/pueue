@@ -1,9 +1,16 @@
+"""Queue implementation."""
 import os
 import pickle
 
 
 class Queue():
+    """The task queue representation.
+
+    All tasks, task states and process outputs are stored inside.
+    """
+
     def __init__(self, config_dir):
+        """Create a new queue and initialize it with a previous queue, if existing."""
         self.config_dir = config_dir
         self.read()
         self.clean()
@@ -13,24 +20,31 @@ class Queue():
             self.next_key = 0
 
     def keys(self):
+        """Return queue keys."""
         return self.queue.keys()
 
     def __len__(self):
+        """Length information about the queue."""
         return len(self.queue)
 
     def __getitem__(self, key):
+        """Get an item from the queue."""
         return self.queue[key]
 
     def __setitem__(self, key, value):
+        """Set an item from the queue."""
         self.queue[key] = value
 
     def __delitem__(self, key):
+        """Delete an item from the queue."""
         del self.queue[key]
 
     def items(self):
+        """Get all items from the queue."""
         return self.queue.items()
 
     def get(self, key):
+        """Get an item from the queue."""
         return self.queue.get(key)
 
     def reset(self):
@@ -46,7 +60,6 @@ class Queue():
         entries in the queue ('running', 'stopping', 'killing'), we clean those
         and enqueue them again.
         """
-
         for _, item in self.queue.items():
             if item['status'] in ['paused', 'running', 'stopping', 'killing']:
                 item['status'] = 'queued'
@@ -68,6 +81,7 @@ class Queue():
         Returns:
             None : If no key is found.
             Int: If a valid entry is found.
+
         """
         smallest = None
         for key in self.queue.keys():
@@ -83,7 +97,7 @@ class Queue():
             queue_file = open(queue_path, 'rb')
             try:
                 self.queue = pickle.load(queue_file)
-            except:
+            except Exception:
                 print('Queue file corrupted, deleting old queue')
                 os.remove(queue_path)
                 self.queue = {}
@@ -97,7 +111,7 @@ class Queue():
         queue_file = open(queue_path, 'wb+')
         try:
             pickle.dump(self.queue, queue_file, -1)
-        except:
+        except Exception:
             print('Error while writing to queue file. Wrong file permissions?')
         queue_file.close()
 

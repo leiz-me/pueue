@@ -27,10 +27,10 @@ def daemon_factory(path):
         except KeyboardInterrupt:
             print('Keyboard interrupt. Shutting down')
             daemon.stop_daemon()
-        except:
+        except Exception:
             try:
                 daemon.stop_daemon()
-            except:
+            except Exception:
                 pass
             cleanup(config_dir)
             raise
@@ -38,6 +38,7 @@ def daemon_factory(path):
 
 
 def main():
+    """Execute entry function."""
     args = parser.parse_args()
     args_dict = vars(args)
     root_dir = args_dict['root'] if 'root' in args else None

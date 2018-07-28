@@ -1,3 +1,4 @@
+"""Possible singals, which can be send to a process via `kill`."""
 import signal
 
 signals = {

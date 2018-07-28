@@ -23,10 +23,11 @@ class Daemon():
     communication code. The daemon manages the processes and the queue
     with the help of two other classes `ProcessHandler` and `Queue`.
     """
-    def __init__(self, root_dir=None):
-        """Initializes the daemon.
 
-        Creates all needed directories, reads previous pueue sessions
+    def __init__(self, root_dir=None):
+        """Initialize the daemon.
+
+        Create all needed directories, reads previous pueue sessions
         and the configuration files.
         """
         self.initialize_directories(root_dir)
@@ -42,7 +43,7 @@ class Daemon():
             self.process_handler.set_max(int(self.config['default']['maxProcesses']))
             self.process_handler.set_shell()
 
-        except:
+        except Exception:
             self.logger.exception()
             raise
 
@@ -57,7 +58,7 @@ class Daemon():
             if self.queue.next() is None:
                 self.logger.rotate(self.queue)
                 self.queue.reset()
-        except:
+        except Exception:
             self.logger.exception()
             raise
 
@@ -86,8 +87,8 @@ class Daemon():
 
         Returns:
             socket.socket: The daemon socket. Clients connect to this socket.
-        """
 
+        """
         socket_path = os.path.join(self.config_dir, 'pueue.sock')
         # Create Socket and exit with 1, if socket can't be created
         try:
@@ -100,7 +101,7 @@ class Daemon():
             self.socket.listen(0)
             # Set file permissions
             os.chmod(socket_path, stat.S_IRWXU)
-        except:
+        except Exception:
             self.logger.error("Daemon couldn't socket. Aborting")
             self.logger.exception()
             sys.exit(1)
@@ -118,7 +119,7 @@ class Daemon():
             os.makedirs(self.config_dir)
 
     def respond_client(self, answer, socket):
-        """Generic function to send an answer to the client."""
+        """Send an answer to the client."""
         response = pickle.dumps(answer, -1)
         socket.sendall(response)
         self.read_list.remove(socket)
@@ -134,7 +135,7 @@ class Daemon():
             try:
                 self.config.read(config_file)
                 return
-            except:
+            except Exception:
                 self.logger.error('Error while parsing config file. Deleting old config')
                 self.logger.exception()
 
@@ -198,7 +199,7 @@ class Daemon():
                         try:
                             client_socket, client_address = self.socket.accept()
                             self.read_list.append(client_socket)
-                        except:
+                        except Exception:
                             self.logger.warning('Daemon rejected client')
                     else:
                         # Trying to receive instruction from client socket
@@ -261,7 +262,7 @@ class Daemon():
                             else:
                                 self.respond_client({'message': 'Unknown Command',
                                                     'status': 'error'}, waiting_socket)
-        except:
+        except Exception:
             self.logger.exception()
 
         # Wait for killed or stopped processes to finish (cleanup)
@@ -284,6 +285,7 @@ class Daemon():
                 'status': 'success'}
 
     def set_config(self, payload):
+        """Update the current config depending on the payload and save it."""
         self.config['default'][payload['option']] = str(payload['value'])
 
         if payload['option'] == 'maxProcesses':
@@ -343,7 +345,6 @@ class Daemon():
 
     def reset_everything(self, payload):
         """Kill all processes, delete the queue and clean everything up."""
-
         kill_signal = signals['9']
         self.process_handler.kill_all(kill_signal, True)
         self.process_handler.wait_for_finish()
@@ -353,12 +354,11 @@ class Daemon():
         return answer
 
     def clear(self, payload):
-        """Clears queue from any `done` or `failed` entries.
+        """Clear queue from any `done` or `failed` entries.
 
         The log will be rotated once. Otherwise we would loose all logs from
         thoes finished processes.
         """
-
         self.logger.rotate(self.queue)
         self.queue.clear()
         self.logger.write(self.queue)
