@@ -16,7 +16,8 @@ def receive_data(socket):
     answer = b""
     while True:
         packet = socket.recv(4096)
-        if not packet: break
+        if not packet:
+            break
         answer += packet
     response = pickle.loads(answer)
     socket.close()

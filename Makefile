@@ -5,7 +5,6 @@ default: dev-install
 setup:
 	virtualenv -p python venv
 	venv/bin/pip install --upgrade pip
-	venv/bin/pip install -r requirements.txt -r requirements-dev.txt
 
 completion:
 	cp ./utils/_pueue /usr/share/zsh/site-functions/_pueue

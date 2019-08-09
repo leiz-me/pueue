@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 ## [1.0.1]
+### Added
+- New flag to the log command, namely keys (-k). The default is now the last finished process.
+- If you want to few other logs you need to specify them with -k.
+- `show` now shows the latest started process by default.
+
+### Improvements
+- `show` and `log` have been refactored and should be significantly faster, since no socket communication will be used any longer.
+
+## [1.0.1]
 ### Fixed
 - Argparse help messages
 

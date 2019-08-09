@@ -75,14 +75,15 @@ custom_shell_subcommand.set_defaults(
 
 
 # Show
-show_subcommand = subparsers.add_parser('show', help='Shows the output of the currently running process')
+show_subcommand = subparsers.add_parser(
+    'show', help='Shows the output of running processes (Most recent by default)')
+show_subcommand.add_argument(
+    '--key', '-k', type=int,
+    help='Show the output of a specific process.'
+)
 show_subcommand.add_argument(
     '-w', '--watch', action='store_true',
     help='Get live output in a curses session. Like tail -f.'
-)
-show_subcommand.add_argument(
-    '--key', '-k',  type=int,
-    help='Show the output of a specific process.'
 )
 
 show_subcommand.set_defaults(func=execute_show)
@@ -90,10 +91,14 @@ show_subcommand.set_defaults(func=execute_show)
 
 # Logs
 logs_subcommand = subparsers.add_parser(
-    'log', help='Print the current log file to the command line.')
+    'log', help='Print the log of finished processes (Most recent by default).')
 logs_subcommand.add_argument(
-    'keys', type=int, nargs='*',
+    '--keys', '-k', type=int, nargs='*',
     help='Show the logs of the specified processes.'
+)
+show_subcommand.add_argument(
+    '--all', '-a',  type=int,
+    help='Show the output of a specific process.'
 )
 logs_subcommand.set_defaults(func=execute_log)
 

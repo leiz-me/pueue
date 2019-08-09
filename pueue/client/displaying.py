@@ -2,13 +2,13 @@ import os
 import time
 import math
 import curses
-import pickle
 import operator
 
 from textwrap import wrap
 from functools import reduce
 from colorclass import Color
 
+from pueue.client import get_queue
 from pueue.client.factories import command_factory
 from pueue.daemon.files import get_descriptor_output
 
@@ -114,46 +114,45 @@ def execute_log(args, root_dir):
 
     """
     # Print the logs of all specified processes
-    if args.get('keys'):
-        config_dir = os.path.join(root_dir, '.config/pueue')
-        queue_path = os.path.join(config_dir, 'queue')
-        if os.path.exists(queue_path):
-            queue_file = open(queue_path, 'rb')
-            try:
-                queue = pickle.load(queue_file)
-            except Exception:
-                print('Queue log file seems to be corrupted. Aborting.')
-                return
-            queue_file.close()
-        else:
-            print('There is no queue log file. Aborting.')
+    keys = args.get('keys', None)
+    config_dir = os.path.join(root_dir, '.config/pueue')
+    queue = get_queue(config_dir)
+    if queue is None:
+        return
+
+    if keys is None:
+        max_key = None
+        # Get newest finished process key
+        for key, data in queue.items():
+            if data['status'] == 'done':
+                if max_key is None or max_key < key:
+                    max_key = key
+
+        if max_key is None:
+            print('No finished process, use `show` to look at running processes.')
             return
 
-        for key in args.get('keys'):
-            # Check if there is an entry with this key
-            if queue.get(key) and queue[key]['status'] in ['failed', 'done']:
-                entry = queue[key]
-                print('Log of entry: {}'.format(key))
-                print('Returncode: {}'.format(entry['returncode']))
-                print('Command: {}'.format(entry['command']))
-                print('Path: {}'.format(entry['path']))
-                print('Start: {}, End: {} \n'.format(entry['start'], entry['end']))
+        keys = [max_key]
 
-                # Write STDERR
-                if len(entry['stderr']) > 0:
-                    print(Color('{autored}Stderr output: {/autored}\n    ') + entry['stderr'])
+    # Check if there is an entry with this key
+    for key in keys:
+        if queue.get(key) and queue[key]['status'] in ['failed', 'done']:
+            entry = queue[key]
+            print('Log of entry: {}'.format(key))
+            print('Returncode: {}'.format(entry['returncode']))
+            print('Command: {}'.format(entry['command']))
+            print('Path: {}'.format(entry['path']))
+            print('Start: {}, End: {} \n'.format(entry['start'], entry['end']))
 
-                # Write STDOUT
-                if len(entry['stdout']) > 0:
-                    print(Color('{autogreen}Stdout output: {/autogreen}\n    ') + entry['stdout'])
-            else:
-                print('No finished process with key {}.'.format(key))
+            # Write STDERR
+            if len(entry['stderr']) > 0:
+                print(Color('{autored}Stderr output: {/autored}\n    ') + entry['stderr'])
 
-    # Print the log of all processes
-    else:
-        log_path = os.path.join(root_dir, '.local/share/pueue/queue.log')
-        log_file = open(log_path, 'r')
-        print(log_file.read())
+            # Write STDOUT
+            if len(entry['stdout']) > 0:
+                print(Color('{autogreen}Stdout output: {/autogreen}\n    ') + entry['stdout'])
+        else:
+            print('No finished process with key {}.'.format(key))
 
 
 def execute_show(args, root_dir):
@@ -165,35 +164,40 @@ def execute_show(args, root_dir):
         root_dir (string): The path to the root directory the daemon is running in.
 
     """
-    key = None
-    if args.get('key'):
-        key = args['key']
-        status = command_factory('status')({}, root_dir=root_dir)
-        if key not in status['data'] or status['data'][key]['status'] != 'running':
+    # Get current queue from file.
+    config_dir = os.path.join(root_dir, '.config/pueue')
+    queue = get_queue(config_dir)
+    if queue is None:
+        return
+
+    key = args.get('key', None)
+    # Check whether the specified process is running
+    if key is not None:
+        if key not in queue or queue[key]['status'] != 'running':
             print('No running process with this key, use `log` to show finished processes.')
             return
 
-    # In case no key provided, we take the oldest running process
+    # In case no key is provided, we take the newest running process
     else:
-        status = command_factory('status')({}, root_dir=root_dir)
-        if isinstance(status['data'], str):
-            print(status['data'])
-            return
-        for k in sorted(status['data'].keys()):
-            if status['data'][k]['status'] == 'running':
-                key = k
-                break
-        if key is None:
+        max_key = None
+        for k, data in queue.items():
+            if data['status'] == 'running':
+                if key is None or max_key < k:
+                    max_key = k
+
+        if max_key is None:
             print('No running process, use `log` to show finished processes.')
             return
 
-    config_dir = os.path.join(root_dir, '.config/pueue')
+        key = max_key
+
     # Get current pueueSTDout file from tmp
     stdoutFile = os.path.join(config_dir, 'pueue_process_{}.stdout'.format(key))
     stderrFile = os.path.join(config_dir, 'pueue_process_{}.stderr'.format(key))
     stdoutDescriptor = open(stdoutFile, 'r')
     stderrDescriptor = open(stderrFile, 'r')
     running = True
+
     # Continually print output with curses or just print once
     if args['watch']:
         # Initialize curses
@@ -213,7 +217,7 @@ def execute_show(args, root_dir):
                 stdscr.addstr(0, 0, message)
                 stdscr.refresh()
                 time.sleep(2)
-        except Exception:
+        finally:
             # Curses cleanup
             curses.nocbreak()
             stdscr.keypad(False)
