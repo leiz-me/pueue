@@ -91,7 +91,7 @@ There is a help option (-h) for all commands, but I'll list them here anyway.
     `show --watch` will continually show the stdout output of the subprocess in a `curses` session.  
     `show` without `--watch` will print the stderr as well. This can be useful if the subprocess prompts for user input (This is often piped to stderr).  
 
-`pueue log [keys...]` Print the output and status of all finished processes or of the specified finished processes.  
+`pueue log -k [keys...]` Print the output and status of the latest finished process or of the specified finished processes.  
 `pueue send [input]` Send a string to the subprocess's stdin. In case a process prompts for user input, you can use this to interact with the subprocess.  
 The stdin pipe is flushed after every `send` command. To simulate a `\n` you need to add a newline in your string:
 
