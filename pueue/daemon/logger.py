@@ -43,7 +43,7 @@ class Logger():
         # Add a handler which outputs to a logfile
         file_handler = RotatingFileHandler(
             self.daemon_log_path,
-            maxBytes=(1048576*5),
+            maxBytes=(1048576 * 5),
             backupCount=7
         )
         file_handler.setFormatter(log_format)
