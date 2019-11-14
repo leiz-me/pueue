@@ -143,6 +143,7 @@ class Daemon():
             'resumeAfterStart': False,
             'maxProcesses': 1,
             'customShell': 'default',
+            'timeFormat': '%H:%M'
         }
         self.config['log'] = {
             'logTime': 60*60*24*14,
@@ -288,6 +289,8 @@ class Daemon():
         """Update the current config depending on the payload and save it."""
         self.config['default'][payload['option']] = str(payload['value'])
 
+        if payload['option'] == 'timeFormat':
+            self.process_handler.set_time_format(payload['value'])
         if payload['option'] == 'maxProcesses':
             self.process_handler.set_max(payload['value'])
         if payload['option'] == 'customShell':

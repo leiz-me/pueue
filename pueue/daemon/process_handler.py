@@ -25,6 +25,7 @@ class ProcessHandler():
         self.stopped = False
         self.max_processes = 1
         self.custom_shell = None
+        self.time_format = '%H:%M'
         self.processes = {}
         self.descriptors = {}
 
@@ -40,6 +41,10 @@ class ProcessHandler():
     def set_shell(self, path='default'):
         """Set the amount of concurrent running processes."""
         self.custom_shell = path
+
+    def set_time_format(self, fmt='%H:%M'):
+        """Set the format of start/end time."""
+        self.time_format = fmt
 
     def is_running(self, key):
         """Return if there is a running process for this key."""
@@ -119,7 +124,7 @@ class ProcessHandler():
                     # Add outputs to queue
                     self.queue[key]['stdout'] = output
                     self.queue[key]['stderr'] = error_output
-                    self.queue[key]['end'] = str(datetime.now().strftime("%H:%M"))
+                    self.queue[key]['end'] = str(datetime.now().strftime(self.time_format))
 
                     self.queue.write()
                     changed = True
@@ -196,7 +201,7 @@ class ProcessHandler():
                     cwd=self.queue[key]['path']
                 )
             self.queue[key]['status'] = 'running'
-            self.queue[key]['start'] = str(datetime.now().strftime("%H:%M"))
+            self.queue[key]['start'] = str(datetime.now().strftime(self.time_format))
 
         self.queue.write()
 
