@@ -143,7 +143,7 @@ class Daemon():
             'resumeAfterStart': False,
             'maxProcesses': 1,
             'customShell': 'default',
-            'timeFormat': '%H:%M'
+            'timeFormat': '%%H:%%M'
         }
         self.config['log'] = {
             'logTime': 60*60*24*14,
